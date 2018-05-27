@@ -1,4 +1,5 @@
-﻿using ConsoleEngine.Engine;
+﻿using ConsoleEngine;
+using ConsoleEngine.Engine;
 using DodgeTheAsteroid.Objects;
 using System;
 using System.Collections.Generic;
@@ -51,12 +52,12 @@ namespace DodgeTheAsteroid
             Ship Player1 = new Ship(SB);
             Random newrockpos = new Random();
 
-            SB.FixedText.Add(new FixedText(new string('-', Console.WindowWidth), 0, Console.WindowHeight - 4));
-            SB.FixedText.Add(new FixedText("Dodge the Asteroid by JakeTrans", 0, Console.WindowHeight - 3));
-            SB.FixedText.Add(new FixedText("Cursors to move, Space to shoot '0' is a rock", 0, Console.WindowHeight - 2));
+            SB.FixedText.Add(new FixedText(new string('-',Console.WindowWidth),  new ConsoleEngine.Coordinate(0, Console.WindowHeight - 4)));
+            SB.FixedText.Add(new FixedText("Dodge the Asteroid by JakeTrans", new ConsoleEngine.Coordinate(0, Console.WindowHeight - 3)));
+            SB.FixedText.Add(new FixedText("Cursors to move, Space to shoot '0' is a rock", new ConsoleEngine.Coordinate(0, Console.WindowHeight - 2)));
             
             Controls Play1con = CreateControls(Player1);
-            SB.Draw("READY????", (Console.WindowWidth / 2) - 10, Console.WindowHeight / 2);
+            SB.Draw("READY????", new ConsoleEngine.Coordinate((Console.WindowWidth / 2) - 10, Console.WindowHeight / 2));
         
             SB.UpdateScreen(objlist);
             Console.ReadKey();
@@ -85,7 +86,7 @@ namespace DodgeTheAsteroid
                 //Despawn
                 for (int i = 0; i < objlist.Count; i++)
                 {
-                    if (objlist[i].Y > SB.Height - 6 || objlist[i].Y == 1 || objlist[i].X <= 2 || objlist[i].X >= Console.WindowWidth - 2 ||
+                    if (objlist[i].Position.Y > SB.Height - 6 || objlist[i].Position .Y == 1 || objlist[i].Position.X <= 2 || objlist[i].Position.X >= Console.WindowWidth - 2 ||
                         (objlist[i].Hit == true && objlist[i].GetType() != typeof(Ship)))
                     {
                         objlist[i].DestroyObject();
@@ -118,23 +119,25 @@ namespace DodgeTheAsteroid
                     {
 
                         //Tuple<int, int> TopLeft = GeneralFunctions.FindTopLeft(GameAnimations.TwoTickExplode()[0], new Tuple<int, int>(item.X, item.Y));
-                        Animation Anim2 = new Animation(GameAnimations.ShipExplode(), item.X, item.Y);
-                        Animation Anim = new Animation(GameAnimations.TwoTickExplode(), item.HitLocation.Item2 - 2, item.HitLocation.Item1 - 2);
+                        Animation Anim2 = new Animation(GameAnimations.ShipExplode(), new Coordinate(item.Position.X, item.Position.Y));
+                        Animation Anim = new Animation(GameAnimations.TwoTickExplode(), new Coordinate(item.HitLocation.X - 2, item.HitLocation.Y - 2));
 
                         SB.AnimatationtoRUN.Add(Anim2);
-                        SB.FixedText.Add(new FixedText("YOU HAVE BEEN HIT", 0, 0));
+                        SB.AnimatationtoRUN.Add(Anim);
 
-                        SB.FixedText.Add(new FixedText("SCORE -- " + Score.ToString(), 0, 1));
+                        SB.FixedText.Add(new FixedText("YOU HAVE BEEN HIT", new Coordinate( 0, 0)));
+
+                        SB.FixedText.Add(new FixedText("SCORE -- " + Score.ToString(), new Coordinate( 0, 1)));
 
                         item.DestroyObject();
 
-                        SB.UpdateScreen(objlist);
+                        SB.UpdateScreen(objlist );
 
                         goto Endpoint;
                     }
                     else if (item.GetType() == typeof(Rock))
                     {
-                        Animation Anim = new Animation(GameAnimations.TwoTickExplode(), item.HitLocation.Item2 - 2, item.HitLocation.Item1 - 2);
+                        Animation Anim = new Animation(GameAnimations.TwoTickExplode(), new Coordinate(item.HitLocation.Y - 2, item.HitLocation.X - 2));
                         SB.AnimatationtoRUN.Add(Anim);
                     }
                 }
@@ -151,7 +154,7 @@ namespace DodgeTheAsteroid
             {
                 item.DestroyObject();
             }
-            SB.FixedText.Add(new FixedText("PRESS Y TO RESTART OR N TO EXIT", 0, 4));
+            SB.FixedText.Add(new FixedText("PRESS Y TO RESTART OR N TO EXIT", new Coordinate(0, 4)));
             SB.UpdateScreen(objlist);
             RespawnQPoint:
             ConsoleKeyInfo CK = Console.ReadKey(true);
@@ -171,17 +174,17 @@ namespace DodgeTheAsteroid
                 goto RespawnQPoint;
             }
 
-            SB.Draw("EXITING", 0, 3);
+            SB.Draw("EXITING", new Coordinate(0, 3));
             SB.UpdateScreen(objlist);
         }
         private Controls CreateControls(Ship Shiptocontrol)
         {
-            Controls controller = new Controls(Shiptocontrol);
+            Controls controller = new Controls();
 
-            controller.Gamecontrols.Add(new Control(ConsoleKey.RightArrow, new Action(() => Shiptocontrol.MoveObject(1, 0))));
-            controller.Gamecontrols.Add(new Control(ConsoleKey.LeftArrow, new Action(() => Shiptocontrol.MoveObject(-1, 0))));
-            controller.Gamecontrols.Add(new Control(ConsoleKey.UpArrow, new Action(() => Shiptocontrol.MoveObject(0, -1))));
-            controller.Gamecontrols.Add(new Control(ConsoleKey.DownArrow, new Action(() => Shiptocontrol.MoveObject(0, 1))));
+            controller.Gamecontrols.Add(new Control(ConsoleKey.RightArrow, new Action(() => Shiptocontrol.MoveObject(new Coordinate(1, 0)))));
+            controller.Gamecontrols.Add(new Control(ConsoleKey.LeftArrow, new Action(() => Shiptocontrol.MoveObject(new Coordinate(-1, 0)))));
+            controller.Gamecontrols.Add(new Control(ConsoleKey.UpArrow, new Action(() => Shiptocontrol.MoveObject(new Coordinate(0, -1)))));
+            controller.Gamecontrols.Add(new Control(ConsoleKey.DownArrow, new Action(() => Shiptocontrol.MoveObject(new Coordinate(0, 1)))));
             controller.Gamecontrols.Add(new Control(ConsoleKey.Spacebar, new Action(() => Firing(Shiptocontrol))));
             return controller;
         }

@@ -1,4 +1,5 @@
-﻿using ConsoleEngine.Engine;
+﻿using ConsoleEngine;
+using ConsoleEngine.Engine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace DodgeTheAsteroid.Objects
 
 
 
-        public Ship(ScreenBuffer SB) : base(35, 35, Graphics.ShipIcon, SB)
+        public Ship(ScreenBuffer SB) : base(new ConsoleEngine.Coordinate(35, 35), Graphics.ShipIcon, SB )
         {
             ShotFired = new List<Shot>();
             Buffer = SB;
@@ -25,7 +26,7 @@ namespace DodgeTheAsteroid.Objects
     }
     class Shot : GameObject
     {
-        public Shot (Ship ShipToAttach, ScreenBuffer SB) : base (ShipToAttach.X+2 , ShipToAttach.Y - 1, new string[] { "|" } ,new Tuple<int,int>(0,-1) , SB )
+        public Shot (Ship ShipToAttach, ScreenBuffer SB) : base (new ConsoleEngine.Coordinate(ShipToAttach.Position.X+2 , ShipToAttach.Position.Y - 1), new string[] { "|" } ,new Coordinate(0,-1) , SB )
         {
 
         }
