@@ -137,7 +137,7 @@ namespace DodgeTheAsteroid
                     }
                     else if (item.GetType() == typeof(Rock))
                     {
-                        Animation Anim = new Animation(GameAnimations.TwoTickExplode(), new Coordinate(item.HitLocation.X - 2, item.HitLocation.Yn - 2));
+                        Animation Anim = new Animation(GameAnimations.TwoTickExplode(), new Coordinate(item.HitLocation.X - 2, item.HitLocation.Y - 2));
                         SB.AnimatationtoRUN.Add(Anim);
                     }
                 }
