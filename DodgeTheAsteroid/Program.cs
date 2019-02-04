@@ -163,6 +163,7 @@ namespace DodgeTheAsteroid
 
             if (CK.Key == ConsoleKey.Y)
             {
+                Score = 0;
                 goto RespawnPoint;
             }
             else if (CK.Key == ConsoleKey.N)
