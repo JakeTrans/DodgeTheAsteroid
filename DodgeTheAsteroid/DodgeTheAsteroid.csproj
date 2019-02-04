@@ -70,6 +70,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ConsoleEngine.dll" />
+    <Content Include="Soundsfrom.txt" />
+    <Content Include="Sounds\sfx_exp_medium2.wav" />
+    <Content Include="Sounds\sfx_exp_short_hard2.wav" />
+    <Content Include="Sounds\sfx_wpn_laser1.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
