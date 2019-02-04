@@ -3,7 +3,10 @@ using ConsoleEngine.Engine;
 using DodgeTheAsteroid.Objects;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Media;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,10 +26,18 @@ namespace DodgeTheAsteroid
     public class Game
     {
         readonly int  RefreshRate = 50;
-
+        SoundPlayer ShotSound;
+        SoundPlayer RockDeath;
+        SoundPlayer ShipDeath;
+        string currentdir = Path.GetDirectoryName(Assembly.GetExecutingAssembly(). CodeBase);
         public Game()
         {
-           
+            ShotSound = new SoundPlayer(currentdir +  "\\Sounds\\sfx_wpn_laser1.wav");
+            RockDeath = new SoundPlayer(currentdir + "\\Sounds\\sfx_exp_short_hard2.wav");
+            ShipDeath = new SoundPlayer(currentdir + "\\Sounds\\sfx_exp_medium2.wav");
+            ShotSound.Load();
+            RockDeath.Load();
+            ShipDeath.Load();
             RunGame();
         }
 
@@ -132,13 +143,14 @@ namespace DodgeTheAsteroid
                         item.DestroyObject();
 
                         SB.UpdateScreen(objlist );
-
+                        ShipDeath.Play();
                         goto Endpoint;
                     }
                     else if (item.GetType() == typeof(Rock))
                     {
                         Animation Anim = new Animation(GameAnimations.TwoTickExplode(), new Coordinate(item.HitLocation.X - 2, item.HitLocation.Y - 2));
                         SB.AnimatationtoRUN.Add(Anim);
+                        RockDeath.Play();
                     }
                 }
                 SB.UpdateScreen(objlist);
@@ -191,13 +203,14 @@ namespace DodgeTheAsteroid
 
         private void Firing(Ship Shipfiring)
         {
-            if ((DateTime.Now - LastShot) <= new TimeSpan(RefreshRate * 25000))
+            if ((DateTime.Now - LastShot) <= new TimeSpan(RefreshRate * 50000))
             {
                 return;
             }
             Shot NewShot = new Shot(Shipfiring, SB);
             objlist.Add(NewShot);
             LastShot = DateTime.Now;
+            ShotSound.Play();
         }
 
 
